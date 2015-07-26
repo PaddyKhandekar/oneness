@@ -1,0 +1,287 @@
+<html xmlns="http://www.w3c.org/1999/xhtml"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:p="http://primefaces.prime.com.tr/ui">
+<h:head>
+	<link type="text/css" rel="stylesheet" href="themes/bluesky/skin.css" />
+</h:head>
+<h:body>
+	<center>
+		<div><p:growl id="growl" showDetail="true" sticky="true" /></div>
+		<h:form id="schoolDetailForm">
+		
+			<h:commandButton value="View Student"
+				actionListener="#{schoolAdminBean.onShowStudentClick}" />
+				
+			<h:commandButton value="Add Student"
+				actionListener="#{schoolAdminBean.onAddNewStudentClick(false)}" />
+
+			<h:commandButton value="Add Set"
+			actionListener="#{schoolAdminBean.onAddNewSetClick}"/>
+
+			<p:dialog header="Set Detail"
+				resizable="false" width="500" height="500" modal="true" id="details"
+				visible="#{schoolAdminBean.showStudentSet}">
+				
+				<h:commandButton value="Add Student"
+				actionListener="#{schoolAdminBean.onAddNewStudentClick(true)}" />
+
+				<p:dataTable var="student"
+					value="#{schoolAdminBean.selectedSet.students}"
+					selectionMode="single" dynamic="true"
+					onRowSelectUpdate="schoolDetailForm"
+					onRowUnselectUpdate="schoolDetailForm"
+					rowSelectListener="#{schoolAdminBean.onSetSelect}"
+					rowUnselectListener="#{schoolAdminBean.onSetUnselect}"
+					paginator="true" rows="10" style="width: 700">
+
+					<p:column sortBy="#{student.resourceId}"
+						filterBy="#{student.resourceId}">
+						<f:facet name="header">
+							<h:outputText value="Id" />
+						</f:facet>
+						<h:outputText value="#{student.resourceId}" />
+					</p:column>
+
+					<p:column filterBy="#{student.lastName}">
+						<f:facet name="header">
+							<h:outputText value="Last Name" />
+						</f:facet>
+						<h:outputText value="#{student.lastName}" />
+					</p:column>
+
+					<p:column filterBy="#{student.name}">
+						<f:facet name="header">
+							<h:outputText value="First Name" />
+						</f:facet>
+						<h:outputText value="#{student.name}" />
+					</p:column>
+
+					<p:column filterBy="#{student.motherName}">
+						<f:facet name="header">
+							<h:outputText value="Mother Name" />
+						</f:facet>
+						<h:outputText value="#{student.motherName}" />
+					</p:column>
+
+					<p:column>
+						<f:facet name="header">
+							<h:outputText value="Gender" />
+						</f:facet>
+						<h:outputText value="#{student.gender}" />
+					</p:column>
+
+					<p:column>
+						<f:facet name="header">
+							<h:outputText value="Remove" />
+						</f:facet>
+						<h:commandButton value="Edit"
+							action="#{schoolAdminBean.onEditStudentClick(student)}" />
+					</p:column>
+				</p:dataTable>
+			</p:dialog>
+			
+			
+			<p:dialog header="Student Details"
+				resizable="false" width="500" height="500" modal="true"
+				visible="#{schoolAdminBean.showStudents}">
+
+				<p:dataTable var="student"
+					value="#{schoolAdminBean.selectedStudents}"
+					selectionMode="single" dynamic="true"
+					paginator="true" rows="10" style="width: 700">
+
+					<p:column sortBy="#{student.resourceId}"
+						filterBy="#{student.resourceId}">
+						<f:facet name="header">
+							<h:outputText value="Id" />
+						</f:facet>
+						<h:outputText value="#{student.resourceId}" />
+					</p:column>
+
+					<p:column filterBy="#{student.lastName}">
+						<f:facet name="header">
+							<h:outputText value="Last Name" />
+						</f:facet>
+						<h:outputText value="#{student.lastName}" />
+					</p:column>
+
+					<p:column filterBy="#{student.name}">
+						<f:facet name="header">
+							<h:outputText value="First Name" />
+						</f:facet>
+						<h:outputText value="#{student.name}" />
+					</p:column>
+
+					<p:column filterBy="#{student.motherName}">
+						<f:facet name="header">
+							<h:outputText value="Mother Name" />
+						</f:facet>
+						<h:outputText value="#{student.motherName}" />
+					</p:column>
+
+					<p:column>
+						<f:facet name="header">
+							<h:outputText value="Gender" />
+						</f:facet>
+						<h:outputText value="#{student.gender}" />
+					</p:column>
+
+					<p:column>
+						<f:facet name="header">
+							<h:outputText value="Edit" />
+						</f:facet>
+						<h:commandButton value="Edit"
+							action="#{schoolAdminBean.onEditStudentClick(student)}" />
+					</p:column>
+					
+					<p:column rendered="#{schoolAdminBean.set}">
+						<f:facet name="header">
+							<h:outputText value="Add" />
+						</f:facet>
+						<h:commandButton value="Add"/>
+					</p:column>
+				</p:dataTable>
+			</p:dialog>
+
+			<p:dialog header="Student Detail" visible="#{schoolAdminBean.studentDetailDialog}"
+				resizable="false" width="500" modal="true" height="500">
+
+				<h:panelGrid id="display" columns="2" cellpadding="4">
+
+					<h:outputText value="Last Name:" />
+					<h:inputText value="#{schoolAdminBean.selectedStudent.lastName}" />
+
+					<h:outputText value="First Name:" />
+					<h:inputText value="#{schoolAdminBean.selectedStudent.name}" />
+
+					<h:outputText value="Middle Name:" />
+					<h:inputText value="#{schoolAdminBean.selectedStudent.fatherName}" />
+
+					<h:outputText value="Mother Name:" />
+					<h:inputText value="#{schoolAdminBean.selectedStudent.motherName}" />
+
+					<h:outputText value="Gender :" />
+					<h:selectOneListbox value="#{schoolAdminBean.selectedStudent.gender}">
+						<f:selectItem itemLabel="Male" itemValue="MALE" />
+						<f:selectItem itemLabel="Female" itemValue="FEMALE" />
+						<f:selectItem itemLabel="Other" itemValue="OTHER" />
+					</h:selectOneListbox>
+
+					<h:outputText value="DOB :" />
+					<p:calendar value="#{schoolAdminBean.selectedDOB}" showOn="button" />
+
+					<h:outputText value="Medium :" />
+					<h:inputText
+						value="#{schoolAdminBean.selectedStudent.mediumOfEducation}" />
+
+					<h:outputText value="Division :" />
+					<h:inputText value="#{schoolAdminBean.selectedStudent.division}" />
+
+					<h:outputText value="Category :" />
+					<h:inputText value="#{schoolAdminBean.selectedStudent.category}" />
+
+					<h:outputText value="Farther DOB :" />
+					<p:calendar value="#{schoolAdminBean.selectedFatherDOB}" showOn="button" />
+
+					<h:outputText value="Mother DOB :" />
+					<p:calendar value="#{schoolAdminBean.selectedMotherDOB}" showOn="button"/>
+
+					<h:outputText value="Farther Occupation :" />
+					<h:inputText
+						value="#{schoolAdminBean.selectedStudent.fatherOccupation}" />
+
+					<h:outputText value="Mother Occupation :" />
+					<h:inputText
+						value="#{schoolAdminBean.selectedStudent.motherOccupation}" />
+
+					<h:outputText value="Male Siblings :" />
+					<h:inputText
+						value="#{schoolAdminBean.selectedStudent.numberOfMaleSiblings}" />
+
+					<h:outputText value="Female Siblings :" />
+					<h:inputText
+						value="#{schoolAdminBean.selectedStudent.numberOfFemaleSiblings}" />
+						
+					<h:outputText value="Edit Marksheet:" />
+					<h:commandButton value="Add Set"
+						actionListener="#{schoolAdminBean.onEditMarksheet}"/>
+				
+				</h:panelGrid>
+				<h:commandButton
+					actionListener="#{schoolAdminBean.onAddUpdateStudentClick}"
+					value="Add/Update Student"/>
+			</p:dialog>
+
+			<p:dataTable var="set" value="#{schoolAdminBean.sets}"
+				selection="#{schoolAdminBean.selectedSet}" selectionMode="single"
+				dynamic="true" onRowSelectUpdate="schoolDetailForm"
+				onRowUnselectUpdate="schoolDetailForm"
+				rowSelectListener="#{schoolAdminBean.onSetSelect}"
+				rowUnselectListener="#{schoolAdminBean.onSetUnselect}"
+				paginator="true" rows="10" style="width: 700">
+
+				<p:column sortBy="#{set.resourceId}" filterBy="#{set.resourceId}">
+					<f:facet name="header">
+						<h:outputText value="Id" />
+					</f:facet>
+					<h:outputText value="#{set.resourceId}" />
+				</p:column>
+
+				<p:column sortBy="#{set.price}" filterBy="#{set.price}">
+					<f:facet name="header">
+						<h:outputText value="Donation Amount" />
+					</f:facet>
+					<h:outputText value="#{set.price}" />
+				</p:column>
+
+				<!-- <p:column>
+					<f:facet name="header">
+						<h:outputText value="Student Count" />
+					</f:facet>
+					<h:outputText value="#{set.students != null ? set.students.size : 0}" />
+				</p:column> -->
+
+				<p:column>
+					<f:facet name="header">
+						<h:outputText value="Edit" />
+					</f:facet>
+					<h:commandButton value="Edit" action="#{schoolAdminBean.onEditSchoolSetClick(set)}" />
+				</p:column>
+			</p:dataTable>
+			
+			<p:dialog header="Student Marks Detail" widgetVar="studentMarksDetailDialog" 
+				resizable="false" width="500" modal="true" height="500" visible="#{schoolAdminBean.studentMarksDetailDialog}">
+				
+				<h:commandButton value="Add MarkSheet"
+						actionListener="#{schoolAdminBean.onAddMarksheet}" />
+						
+				<p:dataTable var="marksheet" value="#{schoolAdminBean.selectedStudent.marksheets}"
+				onRowSelectUpdate="#{schoolAdminBean.onSelectMarksheet}">
+    				<p:column headerText="Standard">
+        				<h:inputText value="#{marksheet.standard}" />
+    				</p:column>
+    				
+    				<p:column headerText="Semister">
+        				<h:inputText value="#{marksheet.examType}" />
+    				</p:column>
+    				
+    				<p:column headerText="Obtained Marks">
+        				<h:inputText value="#{marksheet.marksheetDatas[0].obtainedMarks}" />
+    				</p:column>
+    				
+    				<p:column headerText="Total Marks">
+        				<h:inputText value="#{marksheet.marksheetDatas[0].totalMarks}" />
+    				</p:column>
+    				
+    				<p:column headerText="Remove">
+        				<h:commandButton value="Remove"
+						action="#{schoolAdminBean.onRemoveMarksheet(marksheet)}"/>
+    				</p:column>
+				</p:dataTable>
+    		</p:dialog>
+    		
+		</h:form>
+	</center>
+</h:body>
+</html>

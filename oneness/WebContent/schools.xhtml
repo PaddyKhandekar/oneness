@@ -1,0 +1,174 @@
+<html xmlns="http://www.w3c.org/1999/xhtml"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:p="http://primefaces.prime.com.tr/ui">
+<h:head>
+	<link type="text/css" rel="stylesheet" href="themes/bluesky/skin.css" />
+</h:head>
+<h:body>
+	<center>
+		<div><p:growl id="growl" showDetail="true" sticky="true" /></div>
+		<div>
+			<h:panelGrid id="display" columns="2" cellpadding="4">
+
+					<h:outputText value="Name :" />
+					<h:inputText value="#{schoolBean.newSchool.name}"/>
+					
+					<h:outputText value="Category :" />
+					<h:inputText value="#{schoolBean.newSchool.category}"/>
+					
+					<h:outputText value="Registration No:" />
+					<h:inputText value="#{schoolBean.newSchool.registration}"/>
+					
+					<h:outputText value="Username :" />
+					<h:inputText value="#{schoolBean.newSchool.username}"/>
+					
+					<h:outputText value="Password :" />
+					<h:inputText value="#{schoolBean.newSchool.password}"/>
+					
+					<h:outputText value="Description :" />
+					<h:inputText value="#{schoolBean.newSchool.description}"/>
+
+					<h:outputText value="Address:" />
+					<h:commandButton actionListener="#{schoolBean.onAddNewAddressClick}"
+						value="Add Address" onclick="schoolDialog.show()"/>
+			</h:panelGrid>
+		</div>
+		<h:form id="schoolForm">
+		<h:commandButton
+			value="Add School" actionListener="#{schoolBean.onAddNewSchoolClick}"/>
+
+			<p:dialog header="School Detail" widgetVar="schoolDialog"
+				resizable="false" width="750" height="600" modal="true" id="details" visible="#{schoolBean.showAddSchool}">
+
+				<h:panelGrid id="display" columns="2" cellpadding="4">
+
+					<h:outputText value="Name :" />
+					<h:inputText value="#{schoolBean.newSchool.name}"/>
+					
+					<h:outputText value="Category :" />
+					<h:inputText value="#{schoolBean.newSchool.category}"/>
+					
+					<h:outputText value="Registration No:" />
+					<h:inputText value="#{schoolBean.newSchool.registration}"/>
+					
+					<h:outputText value="Username :" />
+					<h:inputText value="#{schoolBean.newSchool.username}"/>
+					
+					<h:outputText value="Password :" />
+					<h:inputText value="#{schoolBean.newSchool.password}"/>
+					
+					<h:outputText value="Description :" />
+					<h:inputText value="#{schoolBean.newSchool.description}"/>
+
+					<h:outputText value="Address:" />
+					<h:commandButton actionListener="#{schoolBean.onAddNewAddressClick}"
+						value="Add Address" onclick="schoolDialog.show()"/>
+					</h:panelGrid>
+					<p:dataTable id="addresses"
+						value="#{schoolBean.newSchool.addresses}" var="address">
+						<p:column headerText="Address Line 1">
+        					<h:inputTextarea value="#{address.addressLine1}" />
+    					</p:column>
+    					
+    					<p:column headerText="Address Line 2">
+        					<h:inputTextarea value="#{address.addressLine2}" />
+    					</p:column>
+    					
+    					<p:column headerText="Town">
+        					<h:inputText value="#{address.town}" />
+    					</p:column>
+    					
+    					<p:column headerText="State">
+        					<h:inputText value="#{address.state}" />
+    					</p:column>
+    					
+    					<p:column headerText="Pincode">
+        					<h:inputText value="#{address.postal}" />
+    					</p:column>
+    					
+    					<p:column headerText="">
+        					<h:commandButton value="Remove" action="#{schoolBean.onRemoveAddress(address)}"/>
+    					</p:column>
+					</p:dataTable>
+					
+					<h:outputText value="Contact:" />
+					<h:commandButton actionListener="#{schoolBean.onAddNewContactClick}" value="Add Contact"/>
+					<p:dataTable id="contact"
+						value="#{schoolBean.newSchool.contacts}" var="contact">
+						<p:column headerText="First Name">
+        					<h:inputText value="#{contact.firstName}" />
+    					</p:column>
+    					
+    					<p:column headerText="Last Name">
+        					<h:inputText value="#{contact.lastName}" />
+    					</p:column>
+    					
+    					<p:column headerText="Designation">
+        					<h:inputText value="#{contact.designation}" />
+    					</p:column>
+    					
+    					<p:column headerText="Contact Type">
+    						<h:selectOneListbox  value="#{contact.contactType}">
+									<f:selectItem itemLabel="Mobile" itemValue="MOBILE" />
+									<f:selectItem itemLabel="Land Line" itemValue="PHONE" />
+									<f:selectItem itemLabel="Email" itemValue="EMAIL" />
+									<f:selectItem itemLabel="Fax" itemValue="FAX" />
+							</h:selectOneListbox>
+    					</p:column>
+    					
+    					<p:column headerText="Contact">
+        					<h:inputText value="#{contact.contactData}" />
+    					</p:column>
+    					
+    					<p:column headerText="">
+        					<h:commandButton value="Remove" action="#{schoolBean.onRemoveContact(contact)}"/>
+    					</p:column>
+					</p:dataTable>
+					
+				<h:commandButton action="#{schoolBean.onSubmitClick}" value="Add School"/>
+			</p:dialog>
+
+			<p:dataTable var="school"
+				value="#{schoolBean.searchedSchools}"
+				selection="#{schoolBean.selectedSchool}"
+				selectionMode="single" dynamic="true"
+				onRowSelectUpdate="schoolForm"
+				onRowUnselectUpdate="schoolForm"
+				rowSelectListener="#{schoolBean.onSchoolSelect}"
+				rowUnselectListener="#{schoolBean.onSchoolUnselect}"
+				paginator="true" rows="10" style="width: 700">
+
+				<p:column sortBy="#{school.resourceId}" filterBy="#{school.resourceId}">
+					<f:facet name="header">
+						<h:outputText value="Id" />
+					</f:facet>
+					<h:outputText value="#{school.resourceId}" />
+				</p:column>
+
+				<p:column sortBy="#{school.registration}"
+					filterBy="#{school.registration}">
+					<f:facet name="header">
+						<h:outputText value="Registration No" />
+					</f:facet>
+					<h:outputText value="#{school.registration}" />
+				</p:column>
+
+				<p:column sortBy="#{school.name}" filterBy="#{school.name}">
+					<f:facet name="header">
+						<h:outputText value="Name" />
+					</f:facet>
+					<h:outputText value="#{school.name}" />
+				</p:column>
+				
+				<p:column>
+					<f:facet name="header">
+						<h:outputText value="Edit" />
+					</f:facet>
+					<h:commandButton value="Edit" action="#{schoolBean.onEditSelectedSchoolClick(school)}"/>
+				</p:column>
+			</p:dataTable>
+		</h:form>
+	</center> 
+</h:body>
+</html>
