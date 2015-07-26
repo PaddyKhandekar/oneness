@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<persistence version="2.0"
+	xmlns="http://java.sun.com/xml/ns/persistence" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://java.sun.com/xml/ns/persistence http://java.sun.com/xml/ns/persistence/persistence_2_0.xsd">
+	<persistence-unit name="OnenessEJB">
+		<jta-data-source>jdbc/oneness</jta-data-source>
+		<class>in.weq.domain.Address</class>
+		<class>in.weq.domain.Cart</class>
+		<class>in.weq.domain.Contact</class>
+		<class>in.weq.domain.CorporateDonor</class>
+		<class>in.weq.domain.Donor</class>
+		<class>in.weq.domain.IndividualDonor</class>
+		<class>in.weq.domain.Marksheet</class>
+		<class>in.weq.domain.MarksheetData</class>
+		<class>in.weq.domain.NgoDonor</class>
+		<class>in.weq.domain.PaymentDetail</class>
+		<class>in.weq.domain.School</class>
+		<class>in.weq.domain.Student</class>
+		<class>in.weq.domain.StudentSet</class>
+		<class>in.weq.domain.User</class>
+		<class>in.weq.domain.DependentObject</class>
+		<class>in.weq.domain.DomainObject</class>
+		<class>in.weq.domain.UserEntity</class>
+		<class>in.weq.domain.SuperAdmin</class>
+		<class>in.weq.domain.SchoolCategory</class>
+		<class>in.weq.domain.StudentCategory</class>
+	</persistence-unit>
+</persistence>
