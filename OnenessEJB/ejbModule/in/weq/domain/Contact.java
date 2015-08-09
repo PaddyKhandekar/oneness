@@ -9,6 +9,7 @@ import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
+import javax.persistence.OneToOne;
 import javax.persistence.Table;
 
 /**
@@ -24,120 +25,46 @@ public class Contact extends DependentObject {
 	 */
 	private static final long serialVersionUID = 7278974226322458182L;
 
-	@Column(name="title")
-	private String title;
-
-	@Column(name="firstName")
-	private String firstName;
-
-	@Column(name="lastName")
-	private String lastName;
-
-	@Column(name="designation")
-	private String designation;
-
-	@Column(name="contactType")
-	private String contactType;
-
-	@Column(name="contactData")
-	private String contactData;
-
-	@Column(name="status")
-	private String status;
-
-	@Column(name="primaryContact")
-	private boolean primaryContact;
+	@Column(name="data")
+	private String data;
+	
+	@OneToOne
+	private ContactType contactType;
 	
 	@ManyToOne
-	@JoinColumn(name="user_entity_id",referencedColumnName="id")
-	private UserEntity userEntity;
-
-	public String getTitle() {
-		return title;
+	@JoinColumn(name="contact_person_id",referencedColumnName="id")
+	private ContactPerson contactPerson;
+	
+	public String getData() {
+		return data;
 	}
 
-	public void setTitle(String title) {
-		this.title = title;
+	public void setData(String data) {
+		this.data = data;
 	}
 
-	public String getFirstName() {
-		return firstName;
-	}
-
-	public void setFirstName(String firstName) {
-		this.firstName = firstName;
-	}
-
-	public String getLastName() {
-		return lastName;
-	}
-
-	public void setLastName(String lastName) {
-		this.lastName = lastName;
-	}
-
-	public String getDesignation() {
-		return designation;
-	}
-
-	public void setDesignation(String designation) {
-		this.designation = designation;
-	}
-
-	public String getContactType() {
+	public ContactType getContactType() {
 		return contactType;
 	}
 
-	public void setContactType(String contactType) {
+	public void setContactType(ContactType contactType) {
 		this.contactType = contactType;
 	}
 
-	public String getContactData() {
-		return contactData;
+	public ContactPerson getContactPerson() {
+		return contactPerson;
 	}
 
-	public void setContactData(String contactData) {
-		this.contactData = contactData;
+	public void setContactPerson(ContactPerson contactPerson) {
+		this.contactPerson = contactPerson;
 	}
 
-	public String getStatus() {
-		return status;
-	}
-
-	public void setStatus(String status) {
-		this.status = status;
-	}
-
-	public boolean isPrimaryContact() {
-		return primaryContact;
-	}
-
-	public void setPrimaryContact(boolean primaryContact) {
-		this.primaryContact = primaryContact;
-	}
-
-	public UserEntity getUserEntity() {
-		return userEntity;
-	}
-
-	public void setUserEntity(UserEntity userEntity) {
-		this.userEntity = userEntity;
-	}
-	
 	public ContactTO convertToTO(){
+		
 		ContactTO contactTO = new ContactTO();
-		
 		contactTO.setResourceId(getId());
-		contactTO.setContactData(contactData);
-		contactTO.setContactType(contactType);
-		contactTO.setDesignation(designation);
-		contactTO.setFirstName(firstName);
-		contactTO.setLastName(lastName);
-		contactTO.setPrimaryContact(primaryContact);
-		contactTO.setResourceId(getId());
-		contactTO.setStatus(status);
-		contactTO.setTitle(title);
-		
+		contactTO.setData(data);
+		contactTO.setContactType(contactType.convertToTO());
 		return contactTO;
 	}
 }

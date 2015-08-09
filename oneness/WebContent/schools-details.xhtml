@@ -1,0 +1,65 @@
+<html xmlns="http://www.w3c.org/1999/xhtml"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:p="http://primefaces.prime.com.tr/ui">
+<h:head>
+	<link type="text/css" rel="stylesheet" href="themes/bluesky/skin.css" />
+</h:head>
+<!-- <p:ajax listener="#{dropdownView.onCountryChange}" /> -->
+<h:body>
+
+	<div id="search_school_list">
+		<h:panelGrid columns="4" layout="grid">
+			<h:outputText value="Name" />
+			<h:inputText value="#{schoolsDetails.searchableName}" />
+
+			<h:outputText value="School Category" />
+			<h:selectOneMenu value="#{dropdownView.country}" style="width:150px">
+                
+                <f:selectItem itemLabel="Select Country" itemValue="" noSelectionOption="true" />
+                <f:selectItems value="#{dropdownView.countries}" />
+            </h:selectOneMenu>
+            
+			<h:outputText value="Loaction" />
+			<h:inputText value="#{schoolsDetails.searchableLoaction}" />
+			
+			<h:outputText value="Content" />
+			<h:outputText value="Content" />
+		</h:panelGrid>
+		
+		<h:panelGrid columns="4" layout="grid">
+			<h:commandButton value="Add New School" />
+			<h:commandButton value="Reset search" />
+			<h:commandButton value="Search"/>
+		</h:panelGrid>
+	</div>
+
+	<div id="school_list">
+		<p:dataTable var="school" value="#{schoolsDetails.searchedSchools}"
+			selectionMode="single" dynamic="true" paginator="true" rows="10"
+			style="width: 700">
+
+			<p:column sortBy="#{school.registration}">
+				<f:facet name="header">
+					<h:outputText value="Registration Id" />
+				</f:facet>
+				<h:outputText value="#{school.registration}" />
+			</p:column>
+
+			<p:column sortBy="#{school.name}">
+				<f:facet name="header">
+					<h:outputText value="Name" />
+				</f:facet>
+				<h:outputText value="#{school.name}" />
+			</p:column>
+
+			<p:column>
+				<f:facet name="header">
+					<h:outputText value="Edit" />
+				</f:facet>
+				<h:commandButton value="Edit" action="#{schoolBean.setSelectedSchool(school)}" />
+			</p:column>
+		</p:dataTable>
+	</div>
+</h:body>
+</html>

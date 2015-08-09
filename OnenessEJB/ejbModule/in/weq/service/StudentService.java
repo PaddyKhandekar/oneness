@@ -3,15 +3,19 @@
  */
 package in.weq.service;
 
+import in.weq.dao.ContactTypeDAOLocal;
 import in.weq.dao.StudentCategoryDAOLocal;
 import in.weq.dao.StudentDAOLocal;
 import in.weq.domain.Address;
 import in.weq.domain.Contact;
+import in.weq.domain.ContactPerson;
+import in.weq.domain.ContactType;
 import in.weq.domain.Student;
 import in.weq.domain.StudentCategory;
 import in.weq.exception.BusinessException;
 import in.weq.exception.DatabaseException;
 import in.weq.oneness.tos.AddressTO;
+import in.weq.oneness.tos.ContactPersonTO;
 import in.weq.oneness.tos.ContactTO;
 import in.weq.oneness.tos.SchoolTO;
 import in.weq.oneness.tos.StudentCategoryTO;
@@ -39,6 +43,9 @@ public class StudentService implements StudentServiceLocal {
 	
 	@EJB
     private StudentCategoryDAOLocal studentCategoryDAOLocal;
+	
+	@EJB
+	private ContactTypeDAOLocal contactTypeDAOLocal;
 
 	@Override
 	public List<StudentTO> getActiveStudentListFromSchool(SchoolTO schoolTO) throws BusinessException {
@@ -99,24 +106,43 @@ public class StudentService implements StudentServiceLocal {
 			student.setAddresses(addresses);
 		}
 		
-		List<ContactTO> contactTOs = studentTO.getContacts();
-		if(contactTOs != null){
-			List<Contact> contacts = new ArrayList<Contact>();
-			for (Iterator<ContactTO> iContact = contactTOs.iterator(); iContact.hasNext();) {
-				ContactTO contactTO = iContact.next();
-				Contact contact = new Contact();
-				contact.setContactData(contactTO.getContactData());
-				contact.setContactType(contactTO.getContactType());
-				contact.setDesignation(contactTO.getDesignation());
-				contact.setFirstName(contactTO.getFirstName());
-				contact.setLastName(contactTO.getLastName());
-				contact.setPrimaryContact(contactTO.getPrimaryContact());
-				contact.setStatus(contactTO.getStatus());
-				contact.setTitle(contactTO.getTitle());
+		List<ContactPersonTO> contactContactPersonTOs = studentTO.getContactPersons();
+		if(contactContactPersonTOs != null){
+			
+			List<ContactPerson> contactPersons = new ArrayList<ContactPerson>();
+			for (Iterator<ContactPersonTO> iContactPerson = contactContactPersonTOs.iterator(); iContactPerson.hasNext();) {
 				
-				contacts.add(contact);
+				ContactPersonTO contactPersonTO = iContactPerson.next();
+				ContactPerson contactPerson = new ContactPerson();
+				
+				contactPerson.setDesignation(contactPersonTO.getDesignation());
+				contactPerson.setFirstName(contactPersonTO.getFirstName());
+				contactPerson.setLastName(contactPersonTO.getLastName());
+				contactPerson.setPrimaryContact(contactPersonTO.isPrimaryContact());
+				contactPerson.setTitle(contactPersonTO.getTitle());
+				
+				List<ContactTO> contactTOs = contactPersonTO.getContacts();
+				if(contactTOs != null){
+					List<Contact> contacts = new ArrayList<Contact>();
+					for (Iterator<ContactTO> iContact = contactTOs.iterator(); iContact.hasNext();) {
+						ContactTO contactTO = iContact.next();
+						Contact contact = new Contact();
+						
+						ContactType contactType = null;
+						try {
+							contactType = contactTypeDAOLocal.getContactTypeById(contactTO.getResourceId());
+						} catch (DatabaseException e) {
+							throw new BusinessException(e.getMessage());
+						}
+						contact.setContactType(contactType);
+						contact.setData(contactTO.getData());
+					}
+					contactPerson.setContacts(contacts);
+				}
+				
+				contactPersons.add(contactPerson);
 			}
-			student.setContacts(contacts);
+			student.setContactPersons(contactPersons);
 		}
 		
 		try {
@@ -183,25 +209,47 @@ public class StudentService implements StudentServiceLocal {
             student.setAddresses(addresses);
         }
         
-        List<ContactTO> contactTOs = studentTO.getContacts();
-        if(contactTOs != null){
-            List<Contact> contacts = new ArrayList<Contact>();
-            for (Iterator<ContactTO> iContact = contactTOs.iterator(); iContact.hasNext();) {
-                ContactTO contactTO = iContact.next();
-                Contact contact = new Contact();
-                contact.setContactData(contactTO.getContactData());
-                contact.setContactType(contactTO.getContactType());
-                contact.setDesignation(contactTO.getDesignation());
-                contact.setFirstName(contactTO.getFirstName());
-                contact.setLastName(contactTO.getLastName());
-                contact.setPrimaryContact(contactTO.getPrimaryContact());
-                contact.setStatus(contactTO.getStatus());
-                contact.setTitle(contactTO.getTitle());
-                
-                contacts.add(contact);
-            }
-            student.setContacts(contacts);
-        }
+        List<ContactPersonTO> contactContactPersonTOs = studentTO.getContactPersons();
+		if(contactContactPersonTOs != null){
+			
+			List<ContactPerson> contactPersons = new ArrayList<ContactPerson>();
+			for (Iterator<ContactPersonTO> iContactPerson = contactContactPersonTOs.iterator(); iContactPerson.hasNext();) {
+				
+				ContactPersonTO contactPersonTO = iContactPerson.next();
+				ContactPerson contactPerson = new ContactPerson();
+				
+				contactPerson.setId(contactPersonTO.getResourceId());
+				contactPerson.setDesignation(contactPersonTO.getDesignation());
+				contactPerson.setFirstName(contactPersonTO.getFirstName());
+				contactPerson.setLastName(contactPersonTO.getLastName());
+				contactPerson.setPrimaryContact(contactPersonTO.isPrimaryContact());
+				contactPerson.setTitle(contactPersonTO.getTitle());
+				
+				List<ContactTO> contactTOs = contactPersonTO.getContacts();
+				if(contactTOs != null){
+					List<Contact> contacts = new ArrayList<Contact>();
+					for (Iterator<ContactTO> iContact = contactTOs.iterator(); iContact.hasNext();) {
+						ContactTO contactTO = iContact.next();
+						Contact contact = new Contact();
+						
+						ContactType contactType = null;
+						try {
+							contactType = contactTypeDAOLocal.getContactTypeById(contactTO.getResourceId());
+						} catch (DatabaseException e) {
+							throw new BusinessException(e.getMessage());
+						}
+						
+						contact.setId(contactTO.getResourceId());
+						contact.setContactType(contactType);
+						contact.setData(contactTO.getData());
+					}
+					contactPerson.setContacts(contacts);
+				}
+				
+				contactPersons.add(contactPerson);
+			}
+			student.setContactPersons(contactPersons);
+		}
         
         try {
             student = studentDAOLocal.editStudent(student);

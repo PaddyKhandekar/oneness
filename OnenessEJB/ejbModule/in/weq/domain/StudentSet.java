@@ -99,6 +99,7 @@ public class StudentSet extends DependentObject {
 				studentsTos.add(studentTO);
 			}
 			setTO.setStudents(studentsTos);
+			setTO.setStudentSize(studentsTos.size());
 		}
 		return setTO;
 	}

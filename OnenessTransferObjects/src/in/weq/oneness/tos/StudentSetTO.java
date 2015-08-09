@@ -18,6 +18,8 @@ public class StudentSetTO extends DependentObjectTO {
 	private CartTO cart;
 	
 	private List<StudentTO> students;
+	
+	private int studentSize;
 
 	public double getPrice() {
 		return price;
@@ -49,5 +51,13 @@ public class StudentSetTO extends DependentObjectTO {
 
 	public void setStudents(List<StudentTO> students) {
 		this.students = students;
+	}
+
+	public int getStudentSize() {
+		return studentSize;
+	}
+
+	public void setStudentSize(int studentSize) {
+		this.studentSize = studentSize;
 	}
 }

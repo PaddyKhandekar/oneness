@@ -29,7 +29,7 @@ public class StudentTO extends UserEntityTO {
 	
 	private String division;
 	
-	private Long category;
+	private StudentCategoryTO category;
 	
 	private String fatherName;
 	
@@ -117,11 +117,11 @@ public class StudentTO extends UserEntityTO {
 		this.division = division;
 	}
 
-	public Long getCategory() {
+	public StudentCategoryTO getCategory() {
         return category;
     }
 
-    public void setCategory(Long category) {
+    public void setCategory(StudentCategoryTO category) {
         this.category = category;
     }
 

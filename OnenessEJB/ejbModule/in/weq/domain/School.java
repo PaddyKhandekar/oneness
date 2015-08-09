@@ -4,6 +4,7 @@
 package in.weq.domain;
 
 import in.weq.oneness.tos.AddressTO;
+import in.weq.oneness.tos.ContactPersonTO;
 import in.weq.oneness.tos.ContactTO;
 import in.weq.oneness.tos.SchoolTO;
 import in.weq.oneness.tos.StudentSetTO;
@@ -16,6 +17,7 @@ import java.util.List;
 import javax.persistence.Column;
 import javax.persistence.DiscriminatorValue;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.MappedSuperclass;
 import javax.persistence.OneToMany;
 import javax.persistence.OneToOne;
@@ -56,6 +58,12 @@ public class School extends User {
 	
 	@OneToMany(mappedBy="school")
 	private List<Student> students;
+	
+	@OneToOne(fetch = FetchType.EAGER)
+	private Contact emailId;
+	
+	@OneToOne(fetch = FetchType.EAGER)
+	private Contact website;
 
 	public String getName() {
 		return name;
@@ -113,6 +121,22 @@ public class School extends User {
 		this.registration = registration;
 	}
 
+	public Contact getEmailId() {
+		return emailId;
+	}
+
+	public void setEmailId(Contact emailId) {
+		this.emailId = emailId;
+	}
+
+	public Contact getWebsite() {
+		return website;
+	}
+
+	public void setWebsite(Contact website) {
+		this.website = website;
+	}
+
 	public SchoolTO convertToTO() {
 		SchoolTO schoolTO = new SchoolTO();
 		
@@ -132,39 +156,57 @@ public class School extends User {
 		schoolTO.setPassword(getPassword());
 		schoolTO.setRegistration(getRegistration());
 		
-		List<Contact> contacts = getContacts();
-		List<ContactTO> contactTOs = new ArrayList<ContactTO>();
-		for (Iterator<Contact> iterator = contacts.iterator(); iterator.hasNext();) {
-			Contact contact = iterator.next();
-			contactTOs.add(contact.convertToTO());
+		if (emailId != null) {
+			ContactTO emailIdTO = new ContactTO();
+			emailIdTO.setResourceId(emailId.getId());
+			emailIdTO.setData(emailId.getData());
+			schoolTO.setEmailId(emailIdTO);
 		}
 		
-		schoolTO.setContacts(contactTOs);
+		if (website != null) {
+			ContactTO websiteTO = new ContactTO();
+			websiteTO.setResourceId(website.getId());
+			websiteTO.setData(website.getData());
+			schoolTO.setWebsite(websiteTO);
+		}
+		
+		List<ContactPerson> contactPersons = getContactPersons();
+		if(contactPersons != null){
+			List<ContactPersonTO> contactPersonTOs = new ArrayList<ContactPersonTO>();
+			for (Iterator<ContactPerson> iterator = contactPersons.iterator(); iterator.hasNext();) {
+				contactPersonTOs.add(iterator.next().convertToTO());
+			}
+			schoolTO.setContactPersons(contactPersonTOs);
+		}
 		
 		List<Address> addresses = getAddresses();
-		List<AddressTO> addressTOs = new ArrayList<AddressTO>();
-		for (Iterator<Address> iterator = addresses.iterator(); iterator.hasNext();) {
-			Address address =  iterator.next();
-			addressTOs.add(address.convertToTO());
-			
+		if (addresses != null) {
+			List<AddressTO> addressTOs = new ArrayList<AddressTO>();
+			for (Iterator<Address> iterator = addresses.iterator(); iterator.hasNext();) {
+				Address address =  iterator.next();
+				addressTOs.add(address.convertToTO());
+				
+			}
+			schoolTO.setAddresses(addressTOs);
 		}
-		schoolTO.setAddresses(addressTOs);
 		
-		List<StudentSetTO> setTOs = new ArrayList<StudentSetTO>();
-		for (Iterator<StudentSet> setIterator = sets.iterator(); setIterator.hasNext();) {
-		    StudentSet set = setIterator.next();
-		    setTOs.add(set.convertToTO());
-        }
+		if(sets != null){
+			List<StudentSetTO> setTOs = new ArrayList<StudentSetTO>();
+			for (Iterator<StudentSet> setIterator = sets.iterator(); setIterator.hasNext();) {
+				StudentSet set = setIterator.next();
+				setTOs.add(set.convertToTO());
+			}
+			schoolTO.setSets(setTOs);
+		}
 		
-		schoolTO.setSets(setTOs);
-		
-		List<StudentTO> studentTOs = new ArrayList<StudentTO>();
-        for (Iterator<Student> studentIterator = students.iterator(); studentIterator.hasNext();) {
-            Student student = studentIterator.next();
-            studentTOs.add(student.convertToTO());
-        }
-        
-        schoolTO.setStudents(studentTOs);
+		if(students !=  null){
+			List<StudentTO> studentTOs = new ArrayList<StudentTO>();
+			for (Iterator<Student> studentIterator = students.iterator(); studentIterator.hasNext();) {
+				Student student = studentIterator.next();
+				studentTOs.add(student.convertToTO());
+			}
+			schoolTO.setStudents(studentTOs);
+		}
 		
 		return schoolTO;
 	}

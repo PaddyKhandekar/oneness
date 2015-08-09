@@ -26,7 +26,7 @@ import org.primefaces.event.SelectEvent;
 
 @ManagedBean(name = "schoolBean")
 @ViewScoped
-public class SchoolManagedBean {
+public class SchoolManagedBean {/*
     
     @EJB(mappedName = "SchoolService")
     private SchoolServiceLocal schoolServiceLocal;
@@ -366,4 +366,4 @@ public class SchoolManagedBean {
     public void setSearchPayment(boolean searchPayment) {
         this.searchPayment = searchPayment;
     }
-}
+*/}

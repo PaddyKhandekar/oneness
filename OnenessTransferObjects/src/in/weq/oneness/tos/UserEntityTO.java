@@ -13,7 +13,7 @@ public class UserEntityTO extends DomainObjectTO {
 
 	private List<AddressTO> addresses;
 	
-	private List<ContactTO> contacts;
+	private List<ContactPersonTO> contactPersons;
 
 	public List<AddressTO> getAddresses() {
 		return addresses;
@@ -23,11 +23,11 @@ public class UserEntityTO extends DomainObjectTO {
 		this.addresses = addresses;
 	}
 
-	public List<ContactTO> getContacts() {
-		return contacts;
+	public List<ContactPersonTO> getContactPersons() {
+		return contactPersons;
 	}
 
-	public void setContacts(List<ContactTO> contacts) {
-		this.contacts = contacts;
+	public void setContactPersons(List<ContactPersonTO> contactPersons) {
+		this.contactPersons = contactPersons;
 	}
 }

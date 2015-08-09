@@ -3,16 +3,20 @@
  */
 package in.weq.service;
 
+import in.weq.dao.ContactTypeDAOLocal;
 import in.weq.dao.SchoolCategoryDAOLocal;
 import in.weq.dao.SchoolDAOLocal;
 import in.weq.domain.Address;
 import in.weq.domain.Contact;
+import in.weq.domain.ContactPerson;
+import in.weq.domain.ContactType;
 import in.weq.domain.School;
 import in.weq.domain.SchoolCategory;
 import in.weq.exception.BusinessException;
 import in.weq.exception.DatabaseException;
 import in.weq.oneness.constants.Roles;
 import in.weq.oneness.tos.AddressTO;
+import in.weq.oneness.tos.ContactPersonTO;
 import in.weq.oneness.tos.ContactTO;
 import in.weq.oneness.tos.SchoolCategoryTO;
 import in.weq.oneness.tos.SchoolTO;
@@ -40,6 +44,9 @@ public class SchoolService implements SchoolServiceLocal {
 	
 	@EJB
 	private StudentServiceLocal studentServiceLocal;
+	
+	@EJB
+	private ContactTypeDAOLocal contactTypeDAOLocal;
 	
 	@EJB
     private SchoolCategoryDAOLocal schoolCategoryDAOLocal;
@@ -87,48 +94,83 @@ public class SchoolService implements SchoolServiceLocal {
 		school.setRegistration(schoolTO.getRegistration());
 	    school.setUsername(schoolTO.getUsername());
 	    school.setPassword(schoolTO.getPassword());
+	    
+	    ContactTO emailIdTO = schoolTO.getEmailId();
+	    if(emailIdTO != null){
+	    	Contact emailId = new Contact();
+	    	emailId.setData(emailIdTO.getData());
+	    	school.setEmailId(emailId);
+	    }
+	    
+	    ContactTO websiteTO = schoolTO.getEmailId();
+	    if(websiteTO != null){
+	    	Contact website = new Contact();
+	    	website.setData(websiteTO.getData());
+	    	school.setEmailId(website);
+	    }
 
 		List<AddressTO> addressesTOs = schoolTO.getAddresses();
-		List<Address> addresses = new ArrayList<Address>();
-		for (Iterator<AddressTO> iterator = addressesTOs.iterator(); iterator.hasNext();) {
+		if (addressesTOs != null) {
+			
+			List<Address> addresses = new ArrayList<Address>();
+			for (Iterator<AddressTO> iAddress = addressesTOs.iterator(); iAddress.hasNext();) {
 
-			AddressTO addressTO = iterator.next();
-			Address address = new Address();
+				AddressTO addressTO = iAddress.next();
+				Address address = new Address();
 
-			address.setAddressLine1(addressTO.getAddressLine1());
-			address.setAddressLine2(addressTO.getAddressLine2());
-			address.setAddressType(addressTO.getAddressType());
-			address.setCountry(addressTO.getCountry());
-			address.setPermanent(addressTO.getPermanent());
-			address.setPostal(addressTO.getPostal());
-			address.setState(addressTO.getState());
-			address.setTown(addressTO.getTown());
-			address.setUserEntity(school);
+				address.setAddressLine1(addressTO.getAddressLine1());
+				address.setAddressLine2(addressTO.getAddressLine2());
+				address.setAddressType(addressTO.getAddressType());
+				address.setCountry(addressTO.getCountry());
+				address.setPermanent(addressTO.getPermanent());
+				address.setPostal(addressTO.getPostal());
+				address.setState(addressTO.getState());
+				address.setTown(addressTO.getTown());
+				address.setUserEntity(school);
 
-			addresses.add(address);
+				addresses.add(address);
+			}
+			school.setAddresses(addresses);
 		}
-		school.setAddresses(addresses);
 
-		List<ContactTO> contactTOs = schoolTO.getContacts();
-		List<Contact> contacts = new ArrayList<Contact>();
-		for (Iterator<ContactTO> iterator = contactTOs.iterator(); iterator.hasNext();) {
-
-			ContactTO contactTO = iterator.next();
-			Contact contact = new Contact();
-
-			contact.setContactData(contactTO.getContactData());
-			contact.setContactType(contactTO.getContactType());
-			contact.setDesignation(contactTO.getDesignation());
-			contact.setFirstName(contactTO.getFirstName());
-			contact.setLastName(contactTO.getLastName());
-			contact.setPrimaryContact(contactTO.getPrimaryContact());
-			contact.setStatus(contactTO.getStatus());
-			contact.setTitle(contactTO.getTitle());
-			contact.setUserEntity(school);
-
-			contacts.add(contact);
+		List<ContactPersonTO> contactContactPersonTOs = schoolTO.getContactPersons();
+		if(contactContactPersonTOs != null){
+			
+			List<ContactPerson> contactPersons = new ArrayList<ContactPerson>();
+			for (Iterator<ContactPersonTO> iContactPerson = contactContactPersonTOs.iterator(); iContactPerson.hasNext();) {
+				
+				ContactPersonTO contactPersonTO = iContactPerson.next();
+				ContactPerson contactPerson = new ContactPerson();
+				
+				contactPerson.setDesignation(contactPersonTO.getDesignation());
+				contactPerson.setFirstName(contactPersonTO.getFirstName());
+				contactPerson.setLastName(contactPersonTO.getLastName());
+				contactPerson.setPrimaryContact(contactPersonTO.isPrimaryContact());
+				contactPerson.setTitle(contactPersonTO.getTitle());
+				
+				List<ContactTO> contactTOs = contactPersonTO.getContacts();
+				if(contactTOs != null){
+					List<Contact> contacts = new ArrayList<Contact>();
+					for (Iterator<ContactTO> iContact = contactTOs.iterator(); iContact.hasNext();) {
+						ContactTO contactTO = iContact.next();
+						Contact contact = new Contact();
+						
+						ContactType contactType = null;
+						try {
+							contactType = contactTypeDAOLocal.getContactTypeById(contactTO.getResourceId());
+						} catch (DatabaseException e) {
+							throw new BusinessException(e.getMessage());
+						}
+						contact.setContactType(contactType);
+						contact.setData(contactTO.getData());
+					}
+					contactPerson.setContacts(contacts);
+				}
+				
+				contactPersons.add(contactPerson);
+			}
+			school.setContactPersons(contactPersons);
 		}
-		school.setContacts(contacts);
 
 		try {
 			school = schoolDAOLocal.addSchool(school);
@@ -175,50 +217,87 @@ public class SchoolService implements SchoolServiceLocal {
 		school.setUsername(schoolTO.getUsername());
         school.setPassword(schoolTO.getPassword());
         school.setRegistration(schoolTO.getRegistration());
+        
+        ContactTO emailIdTO = schoolTO.getEmailId();
+	    if(emailIdTO != null){
+	    	Contact emailId = new Contact();
+	    	emailId.setId(emailIdTO.getResourceId());
+	    	emailId.setData(emailIdTO.getData());
+	    	school.setEmailId(emailId);
+	    }
+	    
+	    ContactTO websiteTO = schoolTO.getEmailId();
+	    if(websiteTO != null){
+	    	Contact website = new Contact();
+	    	website.setId(websiteTO.getResourceId());
+	    	website.setData(websiteTO.getData());
+	    	school.setEmailId(website);
+	    }
 
 		List<AddressTO> addressesTOs = schoolTO.getAddresses();
-		List<Address> addresses = new ArrayList<Address>();
-		for (Iterator<AddressTO> iterator = addressesTOs.iterator(); iterator.hasNext();) {
-
-			AddressTO addressTO = iterator.next();
-			Address address = new Address();
-
-			address.setId(addressTO.getResourceId());
-			address.setAddressLine1(addressTO.getAddressLine1());
-			address.setAddressLine2(addressTO.getAddressLine2());
-			address.setAddressType(addressTO.getAddressType());
-			address.setCountry(addressTO.getCountry());
-			address.setPermanent(addressTO.getPermanent());
-			address.setPostal(addressTO.getPostal());
-			address.setState(addressTO.getState());
-			address.setTown(addressTO.getTown());
-			address.setUserEntity(school);
-
-			addresses.add(address);
+		if(addressesTOs != null){
+			List<Address> addresses = new ArrayList<Address>();
+			for (Iterator<AddressTO> iterator = addressesTOs.iterator(); iterator.hasNext();) {
+				
+				AddressTO addressTO = iterator.next();
+				Address address = new Address();
+				
+				address.setId(addressTO.getResourceId());
+				address.setAddressLine1(addressTO.getAddressLine1());
+				address.setAddressLine2(addressTO.getAddressLine2());
+				address.setAddressType(addressTO.getAddressType());
+				address.setCountry(addressTO.getCountry());
+				address.setPermanent(addressTO.getPermanent());
+				address.setPostal(addressTO.getPostal());
+				address.setState(addressTO.getState());
+				address.setTown(addressTO.getTown());
+				address.setUserEntity(school);
+				
+				addresses.add(address);
+			}
+			school.setAddresses(addresses);
 		}
-		school.setAddresses(addresses);
 
-		List<ContactTO> contactTOs = schoolTO.getContacts();
-		List<Contact> contacts = new ArrayList<Contact>();
-		for (Iterator<ContactTO> iterator = contactTOs.iterator(); iterator.hasNext();) {
-
-			ContactTO contactTO = iterator.next();
-			Contact contact = new Contact();
-
-			contact.setId(contactTO.getResourceId());
-			contact.setContactData(contactTO.getContactData());
-			contact.setContactType(contactTO.getContactType());
-			contact.setDesignation(contactTO.getDesignation());
-			contact.setFirstName(contactTO.getFirstName());
-			contact.setLastName(contactTO.getLastName());
-			contact.setPrimaryContact(contactTO.getPrimaryContact());
-			contact.setStatus(contactTO.getStatus());
-			contact.setTitle(contactTO.getTitle());
-			contact.setUserEntity(school);
-
-			contacts.add(contact);
+		List<ContactPersonTO> contactContactPersonTOs = schoolTO.getContactPersons();
+		if(contactContactPersonTOs != null){
+			
+			List<ContactPerson> contactPersons = new ArrayList<ContactPerson>();
+			for (Iterator<ContactPersonTO> iContactPerson = contactContactPersonTOs.iterator(); iContactPerson.hasNext();) {
+				
+				ContactPersonTO contactPersonTO = iContactPerson.next();
+				ContactPerson contactPerson = new ContactPerson();
+				
+				contactPerson.setId(contactPersonTO.getResourceId());
+				contactPerson.setDesignation(contactPersonTO.getDesignation());
+				contactPerson.setFirstName(contactPersonTO.getFirstName());
+				contactPerson.setLastName(contactPersonTO.getLastName());
+				contactPerson.setPrimaryContact(contactPersonTO.isPrimaryContact());
+				contactPerson.setTitle(contactPersonTO.getTitle());
+				
+				List<ContactTO> contactTOs = contactPersonTO.getContacts();
+				if(contactTOs != null){
+					List<Contact> contacts = new ArrayList<Contact>();
+					for (Iterator<ContactTO> iContact = contactTOs.iterator(); iContact.hasNext();) {
+						ContactTO contactTO = iContact.next();
+						Contact contact = new Contact();
+						
+						ContactType contactType = null;
+						try {
+							contactType = contactTypeDAOLocal.getContactTypeById(contactTO.getResourceId());
+						} catch (DatabaseException e) {
+							throw new BusinessException(e.getMessage());
+						}
+						contact.setId(contactTO.getResourceId());
+						contact.setContactType(contactType);
+						contact.setData(contactTO.getData());
+					}
+					contactPerson.setContacts(contacts);
+				}
+				
+				contactPersons.add(contactPerson);
+			}
+			school.setContactPersons(contactPersons);
 		}
-		school.setContacts(contacts);
 
 		try {
 			school = schoolDAOLocal.editSchool(school);

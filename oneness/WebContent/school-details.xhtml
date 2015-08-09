@@ -1,0 +1,302 @@
+<html xmlns="http://www.w3c.org/1999/xhtml"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:p="http://primefaces.prime.com.tr/ui">
+<h:head>
+	<link type="text/css" rel="stylesheet" href="themes/bluesky/skin.css" />
+</h:head>
+<h:body>
+
+	<div id="school_details">
+		<h:panelGrid columns="3" layout="grid">
+			<h:outputText value="School Name" />
+			<h:inputText value="#{schoolDetails.selectedSchool}"
+				rendered="#{schoolDetails.editSchool}" />
+			<h:outputText value="#{schoolDetails.selectedSchool}"
+				rendered="#{!schoolDetails.editSchool}" />
+
+			<h:outputText value="School Category" />
+			<h:inputText value="#{schoolDetails.selectedSchool}"
+				rendered="#{schoolDetails.editSchool}" />
+			<h:selectOneMenu value="#{dropdownView.country}" style="width:150px"
+				rendered="#{!schoolDetails.editSchool}">
+				<p:ajax listener="#{dropdownView.onCountryChange}" />
+				<f:selectItem itemLabel="Select Country" itemValue=""
+					noSelectionOption="true" />
+				<f:selectItems value="#{dropdownView.countries}" />
+			</h:selectOneMenu>
+
+			<h:outputText value="Registration Number" />
+			<h:inputText value="#{schoolDetails.selectedSchool.registration}"
+				rendered="#{schoolDetails.editSchool}" />
+			<h:outputText value="#{schoolDetails.selectedSchool.registration}"
+				rendered="#{!schoolDetails.editSchool}" />
+
+			<h:outputText value="Email Id" />
+			<h:inputText value="#{schoolDetails.selectedSchool.registration}"
+				rendered="#{schoolDetails.editSchool}" />
+			<h:outputText value="#{schoolDetails.selectedSchool.registration}"
+				rendered="#{!schoolDetails.editSchool}" />
+
+			<h:outputText value="Website" />
+			<h:inputText value="#{schoolDetails.selectedSchool.registration}"
+				rendered="#{schoolDetails.editSchool}" />
+			<h:outputText value="#{schoolDetails.selectedSchool.registration}"
+				rendered="#{!schoolDetails.editSchool}" />
+		</h:panelGrid>
+	</div>
+
+	<div id="school_extra_details">
+		<p:tabView orientation="TOP">
+			<p:tab title="Address">
+				<h:commandButton value="Add New" />
+
+				<p:dataTable value="#{schoolDetails.selectedSchool.addresses}"
+					var="address">
+					<p:column headerText="Address Line 1">
+						<h:inputTextarea readonly="true" value="#{address.addressLine1}" />
+					</p:column>
+
+					<p:column headerText="Address Line 2">
+						<h:inputTextarea readonly="true" value="#{address.addressLine2}" />
+					</p:column>
+
+					<p:column headerText="Town">
+						<h:outputText value="#{address.town}" />
+					</p:column>
+
+					<p:column headerText="State">
+						<h:outputText value="#{address.state}" />
+					</p:column>
+
+					<p:column headerText="Pincode">
+						<h:outputText value="#{address.postal}" />
+					</p:column>
+
+					<p:column headerText="Edit">
+						<h:commandButton value="Edit"
+							action="#{schoolBean.onRemoveAddress(address)}" />
+					</p:column>
+				</p:dataTable>
+			</p:tab>
+
+			<p:tab title="Contact">
+				<h:commandButton value="Add New" />
+
+				<p:dataTable id="contact"
+					value="#{schoolDetails.selectedSchool.contacts}" var="contact">
+
+
+					<p:column headerText="Title ">
+						<h:outputText value="#{contact.title}" />
+					</p:column>
+
+					<p:column headerText="First Name">
+						<h:outputText value="#{contact.firstName}" />
+					</p:column>
+
+					<p:column headerText="Last Name">
+						<h:outputText value="#{contact.lastName}" />
+					</p:column>
+
+					<p:column headerText="Designation">
+						<h:outputText value="#{contact.designation}" />
+					</p:column>
+
+					<p:column headerText="">
+						<h:commandButton value="Remove"
+							action="#{schoolBean.onRemoveContact(contact)}" />
+					</p:column>
+				</p:dataTable>
+			</p:tab>
+		</p:tabView>
+	</div>
+
+	<div id="address_details">
+		<h:panelGrid columns="2" layout="grid">
+
+			<h:outputText value="Title" />
+			<h:selectOneListbox value="#{schoolDetails.selectedContactPerson.contactType}" >
+				<f:selectItem itemLabel="Mr" itemValue="MR" />
+				<f:selectItem itemLabel="Mis" itemValue="MIS" />
+				<f:selectItem itemLabel="Mis" itemValue="MRS" />
+			</h:selectOneListbox>
+
+			<h:outputText headerText="First Name"/>
+				<h:inputText value="#{schoolDetails.selectedContactPerson.firstName}" />
+
+			<h:outputText headerText="Last Name"/>
+				<h:inputText value="#{schoolDetails.selectedContactPerson.lastName}" />
+
+			<h:outputText headerText="Designation" />
+			<h:inputText value="#{schoolDetails.selectedContactPerson.designation}" />
+			
+			<h:outputText headerText="Email Address" />
+			<h:inputText value="#{schoolDetails.selectedEmail.data}" />
+			
+			<h:outputText headerText="Work Phone No" />
+			<h:inputText value="#{schoolDetails.selectedWrkPhn.data}" />
+			
+			<h:outputText headerText="Mobile No" />
+			<h:inputText value="#{schoolDetails.selectedMblPhn.data}" />
+			
+			<h:outputText headerText="Fax No" />
+			<h:inputText value="#{schoolDetails.selectedFax.data}" />
+			
+			<h:outputText headerText="Is Primary" />
+			<p:selectBooleanCheckbox value="#{schoolDetails.selectedContactPerson.primary}" />
+			
+			<h:commandButton value="Add" actionListener=""/>
+		</h:panelGrid>
+	</div>
+	
+	<div id="contact_details">
+		<h:panelGrid columns="2" layout="grid">
+
+			<h:outputText value="Title" />
+			<h:selectOneListbox value="#{schoolDetails.selectedContactPerson.contactType}" >
+				<f:selectItem itemLabel="Mr" itemValue="MR" />
+				<f:selectItem itemLabel="Mis" itemValue="MIS" />
+				<f:selectItem itemLabel="Mis" itemValue="MRS" />
+			</h:selectOneListbox>
+
+			<h:outputText headerText="First Name"/>
+				<h:inputText value="#{schoolDetails.selectedContactPerson.firstName}" />
+
+			<h:outputText headerText="Last Name"/>
+				<h:inputText value="#{schoolDetails.selectedContactPerson.lastName}" />
+
+			<h:outputText headerText="Designation" />
+			<h:inputText value="#{schoolDetails.selectedContactPerson.designation}" />
+			
+			<h:outputText headerText="Email Address" />
+			<h:inputText value="#{schoolDetails.selectedEmail.data}" />
+			
+			<h:outputText headerText="Work Phone No" />
+			<h:inputText value="#{schoolDetails.selectedWrkPhn.data}" />
+			
+			<h:outputText headerText="Mobile No" />
+			<h:inputText value="#{schoolDetails.selectedMblPhn.data}" />
+			
+			<h:outputText headerText="Fax No" />
+			<h:inputText value="#{schoolDetails.selectedFax.data}" />
+			
+			<h:outputText headerText="Is Primary" />
+			<p:selectBooleanCheckbox value="#{schoolDetails.selectedContactPerson.primary}" />
+			
+			<h:commandButton value="Add" actionListener=""/>
+		</h:panelGrid>
+	</div>
+	
+	<div id="set_details">
+		<h:commandButton value="Add" actionListener=""/>
+		
+		<p:dataTable var="set" value="#{schoolDetails.selectedSchool.sets}"
+			selectionMode="single"
+			paginator="true" rows="10" style="width: 700">
+
+				<p:column sortBy="#{set.resourceId}">
+					<f:facet name="header">
+						<h:outputText value="Id" />
+					</f:facet>
+					<h:outputText value="#{set.resourceId}" />
+				</p:column>
+
+				<p:column>
+					<f:facet name="header">
+						<h:outputText value="Donation Amount" />
+					</f:facet>
+					<h:outputText value="#{set.price}" />
+				</p:column>
+				
+				<p:column>
+					<f:facet name="header">
+						<h:outputText value="Status" />
+					</f:facet>
+					<h:outputText value="#{set.status}" />
+				</p:column>
+				
+				<p:column>
+					<f:facet name="header">
+						<h:outputText value="Students" />
+					</f:facet>
+					<h:outputText value="#{set.studentSize}" />
+				</p:column>
+
+				<p:column>
+					<f:facet name="header">
+						<h:outputText value="Action" />
+					</f:facet>
+					<h:commandButton value="Edit" action="#{schoolDetails.onEditSchoolSetClick(set)}" />
+				</p:column>
+		</p:dataTable>
+	</div>
+	
+	<div id="student_details">
+		<h:commandButton value="Add" actionListener=""/>
+		
+		<p:dataTable var="student"
+			value="#{schoolAdminBean.selectedSet.students}"
+			selectionMode="single"
+			paginator="true" rows="10" style="width: 700">
+
+			<p:column sortBy="#{student.resourceId}">
+				<f:facet name="header">
+					<h:outputText value="Id" />
+				</f:facet>
+				<h:outputText value="#{student.resourceId}" />
+			</p:column>
+
+			<p:column>
+				<f:facet name="header">
+					<h:outputText value="Name" />
+				</f:facet>
+				<h:outputText value="#{student.lastName}"/>
+				<h:outputText value="#{student.name}" />
+			</p:column>
+			
+			<p:column>
+				<f:facet name="header">
+					<h:outputText value="DOB" />
+				</f:facet>
+				<h:outputText value="#{student.lastName}"/>
+			</p:column>
+
+			<p:column>
+				<f:facet name="header">
+					<h:outputText value="Sex" />
+				</f:facet>
+				<h:outputText value="#{student.gender}" />
+			</p:column>
+			
+			<p:column>
+				<f:facet name="header">
+					<h:outputText value="Age" />
+				</f:facet>
+				<h:outputText value="#{student.gender}" />
+			</p:column>
+			
+			<p:column>
+				<f:facet name="header">
+					<h:outputText value="Medium" />
+				</f:facet>
+				<h:outputText value="#{student.mediumOfEducation}" />
+			</p:column>
+			
+			<p:column>
+				<f:facet name="header">
+					<h:outputText value="Category" />
+				</f:facet>
+				<h:outputText value="#{student.category.category}" />
+			</p:column>
+
+			<p:column>
+				<f:facet name="header">
+					<h:outputText value="Remove" />
+				</f:facet>
+				<h:commandButton value="Edit" action="#{schoolAdminBean.onEditStudentClick(student)}" />
+			</p:column>
+		</p:dataTable>
+	</div>
+</h:body>
+</html>

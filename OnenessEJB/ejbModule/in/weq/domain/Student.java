@@ -4,7 +4,7 @@
 package in.weq.domain;
 
 import in.weq.oneness.tos.AddressTO;
-import in.weq.oneness.tos.ContactTO;
+import in.weq.oneness.tos.ContactPersonTO;
 import in.weq.oneness.tos.MarksheetTO;
 import in.weq.oneness.tos.StudentTO;
 
@@ -292,14 +292,14 @@ public class Student extends UserEntity {
 			studentTO.setMarksheets(marksheetTOs);
 		}
 		
-		List<Contact> contacts = getContacts();
-		if(contacts != null){
-			List<ContactTO> contactTOs = new ArrayList<ContactTO>();
-			for (Iterator<Contact> icontact = contacts.iterator(); icontact.hasNext();) {
-				ContactTO contactTO = icontact.next().convertToTO();
-				contactTOs.add(contactTO);
+		List<ContactPerson> contactPersons = getContactPersons();
+		if(contactPersons != null){
+			List<ContactPersonTO> contactPersonTOs = new ArrayList<ContactPersonTO>();
+			for (Iterator<ContactPerson> icontact = contactPersons.iterator(); icontact.hasNext();) {
+				ContactPersonTO contactPersonTO = icontact.next().convertToTO();
+				contactPersonTOs.add(contactPersonTO);
 			}
-			studentTO.setContacts(contactTOs);
+			studentTO.setContactPersons(contactPersonTOs);
 		}
 
 		List<Address> addresses = getAddresses();

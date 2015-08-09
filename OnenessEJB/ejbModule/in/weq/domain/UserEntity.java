@@ -32,7 +32,7 @@ public class UserEntity extends DomainObject {
 	private List<Address> addresses;
 	
 	@OneToMany(mappedBy = "userEntity",cascade = CascadeType.ALL, orphanRemoval = true)
-	private List<Contact> contacts;
+	private List<ContactPerson> contactPersons;
 
 	public List<Address> getAddresses() {
 		return addresses;
@@ -42,11 +42,11 @@ public class UserEntity extends DomainObject {
 		this.addresses = addresses;
 	}
 
-	public List<Contact> getContacts() {
-		return contacts;
+	public List<ContactPerson> getContactPersons() {
+		return contactPersons;
 	}
 
-	public void setContacts(List<Contact> contacts) {
-		this.contacts = contacts;
+	public void setContactPersons(List<ContactPerson> contactPersons) {
+		this.contactPersons = contactPersons;
 	}
 }

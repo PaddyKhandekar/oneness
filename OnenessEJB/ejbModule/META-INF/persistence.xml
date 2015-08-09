@@ -24,5 +24,8 @@
 		<class>in.weq.domain.SuperAdmin</class>
 		<class>in.weq.domain.SchoolCategory</class>
 		<class>in.weq.domain.StudentCategory</class>
+		<class>in.weq.domain.RelStudentSet</class>
+		<class>in.weq.domain.ContactPerson</class>
+		<class>in.weq.domain.ContactType</class>
 	</persistence-unit>
 </persistence>

@@ -22,6 +22,10 @@ public class SchoolTO extends UserTO {
 	
 	private String registration;
 	
+	private ContactTO emailId;
+	
+	private ContactTO website;
+	
     private List<StudentSetTO> sets;
     
     private List<StudentTO> students;
@@ -66,7 +70,23 @@ public class SchoolTO extends UserTO {
 		this.registration = registration;
 	}
 
-    public List<StudentSetTO> getSets() {
+    public ContactTO getEmailId() {
+		return emailId;
+	}
+
+	public void setEmailId(ContactTO emailId) {
+		this.emailId = emailId;
+	}
+
+	public ContactTO getWebsite() {
+		return website;
+	}
+
+	public void setWebsite(ContactTO website) {
+		this.website = website;
+	}
+
+	public List<StudentSetTO> getSets() {
         return sets;
     }
 
